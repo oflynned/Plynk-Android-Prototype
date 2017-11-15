@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1053692995679",
+    "firebase_url": "https://plynkprototype.firebaseio.com",
+    "project_id": "plynkprototype",
+    "storage_bucket": "plynkprototype.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053692995679:android:02ea7cf13301ad13",
+        "android_client_info": {
+          "package_name": "com.syzible.plynk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1053692995679-o07hrbmh0bgaqb2dfrb0otke1m8di96d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.syzible.plynk",
+            "certificate_hash": "e78f9e74f0d2218a5ccbe9d8a1e27893a133433e"
+          }
+        },
+        {
+          "client_id": "1053692995679-18a66pmt7ak6hvurp6j7g40i0fohc87j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnuOrchYUip4CuGHPzYNAAjTNEjsIDPAM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1053692995679-18a66pmt7ak6hvurp6j7g40i0fohc87j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

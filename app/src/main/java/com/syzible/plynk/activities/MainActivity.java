@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
             profilePic.setImageBitmap(bitmap);
         }
 
-        FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ManageMoneyFragment());
+        FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new MyDetailsFragment());
     }
 
     @Override
@@ -139,7 +139,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == R.id.action_about) {
+        } else if (id == R.id.action_nfc_merchant) {
+            startActivity(new Intent(this, MerchantActivity.class));
             return true;
         } else if (id == R.id.action_log_out) {
             FacebookUtils.deleteToken(this);

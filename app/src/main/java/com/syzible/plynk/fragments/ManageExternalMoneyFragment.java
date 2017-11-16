@@ -115,7 +115,7 @@ public class ManageExternalMoneyFragment extends Fragment {
             o.put("bank_card_id", preloadType == PreloadType.preload_android_pay ? "-1" : "-2");
             o.put("user_id", LocalPrefs.getID(getActivity()));
             o.put("amount", new Random().nextInt(20));
-            o.put("description", "preload from " + preloadType.name());
+            o.put("description", preloadType == PreloadType.preload_android_pay ? "Android Pay" : "Bank Account");
             o.put("preload_type", preloadType.name());
         } catch (JSONException e) {
             e.printStackTrace();

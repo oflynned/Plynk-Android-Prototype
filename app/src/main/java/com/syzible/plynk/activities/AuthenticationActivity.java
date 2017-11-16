@@ -1,19 +1,31 @@
 package com.syzible.plynk.activities;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.nfc.FormatException;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
@@ -26,9 +38,11 @@ import com.syzible.plynk.utils.EmojiUtils;
 import com.syzible.plynk.utils.EncodingUtils;
 import com.syzible.plynk.utils.FacebookUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import cz.msebera.android.httpclient.Header;
@@ -42,6 +56,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class AuthenticationActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
+    private NfcAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +78,50 @@ public class AuthenticationActivity extends AppCompatActivity {
 
             registerFacebookCallback();
         }
+
+        enableNfc();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            Parcelable[] rawMessages = intent.getParcelableArrayExtra(
+                    NfcAdapter.EXTRA_NDEF_MESSAGES);
+
+            NdefMessage message = (NdefMessage) rawMessages[0];
+            String dataTransferred = new String(message.getRecords()[0].getPayload());
+            System.out.println(dataTransferred);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+        if (tag != null) {
+            Ndef ndef = Ndef.get(tag);
+            readNfc(ndef);
+        }
+    }
+
+    private void readNfc(Ndef ndef) {
+        try {
+            ndef.connect();
+            NdefMessage ndefMessage = ndef.getNdefMessage();
+            String message = new String(ndefMessage.getRecords()[0].getPayload());
+            System.out.println(message);
+            ndef.close();
+
+        } catch (IOException | FormatException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    private void enableNfc() {
+        adapter = NfcAdapter.getDefaultAdapter(this);
     }
 
     @Override
@@ -103,6 +162,14 @@ public class AuthenticationActivity extends AppCompatActivity {
                                 String surname = o.getString("last_name");
                                 String gender = o.getString("gender");
                                 String pic = "https://graph.facebook.com/" + id + "/picture?type=large";
+
+                                /*
+                                GraphRequest.newMyFriendsRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
+                                    @Override
+                                    public void onCompleted(JSONArray objects, GraphResponse response) {
+                                        System.out.println(response);
+                                    }
+                                }).executeAsync();*/
 
                                 JSONObject postData = new JSONObject();
                                 postData.put("user_id", id);

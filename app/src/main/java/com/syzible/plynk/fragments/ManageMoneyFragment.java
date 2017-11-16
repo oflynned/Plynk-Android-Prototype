@@ -96,7 +96,7 @@ public class ManageMoneyFragment extends Fragment {
             }
         });
 
-        RestClient.post(getActivity(), Endpoints.GET_CARD_DATA, JSONUtils.getId(getActivity()), new BaseJsonHttpResponseHandler<JSONObject>() {
+        RestClient.post(getActivity(), Endpoints.GET_PLYNK_CARD_DATA, JSONUtils.getId(getActivity()), new BaseJsonHttpResponseHandler<JSONObject>() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {
                 Card card = new Card(response);

@@ -23,5 +23,11 @@ public class Endpoints {
     public static final String WITHDRAW_TO_BANK = API_URL + "/transaction/withdraw-to-bank";
 
     // cards
-    public static final String GET_CARD_DATA = API_URL + "/user/get-plynk-card";
+    public static final String GET_PLYNK_CARD_DATA = API_URL + "/user/get-plynk-card";
+    public static final String ADD_BANK_CARD = API_URL + "/user/add-bank-card";
+    public static final String GET_BANK_CARDS = API_URL + "/user/get-bank-cards";
+
+    // preload types
+    public static final String PRELOAD_ANDROID_PAY = "preload_android_pay";
+    public static final String PRELOAD_BANK_CARD = "preload_bank_card";
 }

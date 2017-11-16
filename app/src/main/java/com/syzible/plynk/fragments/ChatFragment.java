@@ -18,6 +18,7 @@ import com.syzible.plynk.network.NetworkCallback;
 import com.syzible.plynk.objects.Conversation;
 import com.syzible.plynk.objects.Message;
 import com.syzible.plynk.objects.User;
+import com.syzible.plynk.ui.ActionBarUtils;
 import com.syzible.plynk.utils.BitmapUtils;
 import com.syzible.plynk.utils.CachingUtils;
 import com.syzible.plynk.utils.EmojiUtils;
@@ -33,8 +34,6 @@ import java.util.Random;
 
 public class ChatFragment extends Fragment {
     private ArrayList<Conversation> conversations = new ArrayList<>();
-    private DialogsList dialogsList;
-    private DialogsListAdapter<Conversation> dialogsListAdapter;
 
     private static final String SHANE_PIC = "https://www.plynk.me/assets/images/team/shane.jpg";
     private static final String CHRIS_PIC = "https://www.plynk.me/assets/images/team/chris.jpg";
@@ -60,11 +59,13 @@ public class ChatFragment extends Fragment {
 
         conversations.sort((Conversation c1, Conversation c2) -> c2.getLastMessage().getCreatedAt().compareTo(c1.getLastMessage().getCreatedAt()));
 
-        dialogsList = view.findViewById(R.id.conversations_list);
-        dialogsListAdapter = new DialogsListAdapter<>(loadImage());
+        DialogsList dialogsList = view.findViewById(R.id.conversations_list);
+        DialogsListAdapter<Conversation> dialogsListAdapter = new DialogsListAdapter<>(loadImage());
         dialogsListAdapter.setItems(conversations);
         dialogsList.setAdapter(dialogsListAdapter);
         dialogsList.scrollToPosition(conversations.size() - 1);
+
+        ActionBarUtils.resetToolbar(getActivity());
 
         return view;
     }

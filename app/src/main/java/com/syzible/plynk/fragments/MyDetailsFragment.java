@@ -13,6 +13,7 @@ import com.syzible.plynk.R;
 import com.syzible.plynk.network.GetImage;
 import com.syzible.plynk.network.NetworkCallback;
 import com.syzible.plynk.persistence.LocalPrefs;
+import com.syzible.plynk.ui.ActionBarUtils;
 import com.syzible.plynk.utils.BitmapUtils;
 import com.syzible.plynk.utils.CachingUtils;
 
@@ -20,12 +21,12 @@ import com.syzible.plynk.utils.CachingUtils;
  * Created by ed on 13/11/2017.
  */
 
-public class MyProfileFragment extends Fragment {
+public class MyDetailsFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_details, container, false);
 
         ImageView profilePic = view.findViewById(R.id.my_profile_pic);
         String id = LocalPrefs.getID(getActivity());
@@ -48,6 +49,8 @@ public class MyProfileFragment extends Fragment {
             Bitmap bitmap = CachingUtils.getCachedImage(id);
             profilePic.setImageBitmap(bitmap);
         }
+
+        ActionBarUtils.resetToolbar(getActivity());
 
         return view;
     }

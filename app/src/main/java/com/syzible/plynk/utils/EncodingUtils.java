@@ -3,6 +3,10 @@ package com.syzible.plynk.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by ed on 15/11/2017.
@@ -27,5 +31,18 @@ public class EncodingUtils {
         }
 
         return encodedText;
+    }
+
+    public static String getEncodedDate() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+        Date date = new Date(System.currentTimeMillis());
+        return format.format(date);
+    }
+
+    public static String getEncodedCurrency(float amount) {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        String value = formatter.format(amount);
+        value = "€" + value.substring(1, value.length());
+        return value;
     }
 }

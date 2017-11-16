@@ -1,9 +1,12 @@
 package com.syzible.plynk.objects;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 
 import com.stfalcon.chatkit.commons.models.IUser;
+import com.syzible.plynk.persistence.LocalPrefs;
+import com.syzible.plynk.utils.EncodingUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -11,17 +14,31 @@ import org.json.JSONObject;
  */
 
 public class User implements IUser {
-    private String id, forename, surname, profileUrl;
+    private String id, forename, surname, profilePic;
 
-    public User(JSONObject object) {
-
+    public User(JSONObject o) {
+        try {
+            this.id = o.getString("user_id");
+            this.forename = o.getString("forename");
+            this.surname = o.getString("surname");
+            this.profilePic = o.getString("profile_pic");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public User(String id, String forename, String surname, String profileUrl) {
         this.id = id;
         this.forename = forename;
         this.surname = surname;
-        this.profileUrl = profileUrl;
+        this.profilePic = profileUrl;
+    }
+
+    public static User getMe(Context context) {
+        return new User(LocalPrefs.getID(context),
+                LocalPrefs.getStringPref(LocalPrefs.Pref.forename, context),
+                LocalPrefs.getStringPref(LocalPrefs.Pref.surname, context),
+                LocalPrefs.getStringPref(LocalPrefs.Pref.profile_pic, context));
     }
 
     @Override
@@ -35,23 +52,19 @@ public class User implements IUser {
     }
 
     public String getForename() {
-        return forename;
+        return EncodingUtils.decodeText(forename);
     }
 
     public String getSurname() {
-        return surname;
+        return EncodingUtils.decodeText(surname);
     }
 
     public String getFullName() {
-        return forename + " " + surname;
+        return getForename() + " " + getSurname();
     }
 
     @Override
     public String getAvatar() {
-        return profileUrl;
-    }
-
-    public String getProfileUrl() {
-        return profileUrl;
+        return profilePic;
     }
 }

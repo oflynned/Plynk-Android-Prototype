@@ -17,4 +17,11 @@ public class Endpoints {
 
     // transactions
     public static final String GET_BALANCE = API_URL + "/transaction/balance";
+    public static final String USER_TRANSACTION = API_URL + "/transaction/make-individual-transaction";
+    public static final String CARD_PAYMENT = API_URL + "/transaction/make-card-payment";
+    public static final String CARD_TOPUP = API_URL + "/transaction/make-card-topup";
+    public static final String WITHDRAW_TO_BANK = API_URL + "/transaction/withdraw-to-bank";
+
+    // cards
+    public static final String GET_CARD_DATA = API_URL + "/user/get-plynk-card";
 }

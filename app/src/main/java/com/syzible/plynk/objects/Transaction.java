@@ -12,16 +12,39 @@ import org.json.JSONObject;
  * Created by ed on 16/11/2017.
  */
 
-public class Transaction implements Comparable<Transaction>{
+public class Transaction implements Comparable<Transaction> {
     private float amount;
-    private User paidToUser, paidFromUser;
+    private Vendor recipient, sender;
     private long time;
+
+    enum TransactionType {
+        individual_transaction,
+        preload_android_pay, preload_bank_card,
+        plynk_good_service_payment, withdrawal_to_bank
+    }
 
     public Transaction(JSONObject o) {
         try {
             this.amount = (float) o.getDouble("amount");
-            this.paidToUser = new User(o.getJSONObject("user_paid_to"));
-            this.paidFromUser = new User(o.getJSONObject("user_paid_from"));
+
+            TransactionType type = TransactionType.valueOf(o.getString("transaction_type"));
+            if (type.equals(TransactionType.individual_transaction)) {
+                this.recipient = new User(o.getJSONObject("paid_to"));
+                this.sender = new User(o.getJSONObject("paid_from"));
+            } else if (type.equals(TransactionType.plynk_good_service_payment)) {
+                this.recipient = new Merchant(o.getJSONObject("paid_to"));
+                this.sender = new User(o.getJSONObject("paid_from"));
+            } else if (type.equals(TransactionType.preload_android_pay)) {
+                this.recipient = new User(o.getJSONObject("paid_to"));
+                this.sender = new Institute(o.getJSONObject("paid_from"));
+            } else if (type.equals(TransactionType.preload_bank_card)) {
+                this.recipient = new User(o.getJSONObject("paid_to"));
+                this.sender = new Institute(o.getJSONObject("paid_from"));
+            } else if (type.equals(TransactionType.withdrawal_to_bank)) {
+                this.sender = new User(o.getJSONObject("paid_to"));
+                this.recipient = new Institute(o.getJSONObject("paid_from"));
+            }
+
             this.time = o.getLong("time");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -30,8 +53,8 @@ public class Transaction implements Comparable<Transaction>{
 
     public Transaction(float amount, User paidToUser, User paidFromUser, long time) {
         this.amount = amount;
-        this.paidToUser = paidToUser;
-        this.paidFromUser = paidFromUser;
+        this.recipient = paidToUser;
+        this.sender = paidFromUser;
         this.time = time;
     }
 
@@ -39,12 +62,12 @@ public class Transaction implements Comparable<Transaction>{
         return amount;
     }
 
-    public User getPaidToUser() {
-        return paidToUser;
+    public Vendor getRecipient() {
+        return recipient;
     }
 
-    public User getPaidFromUser() {
-        return paidFromUser;
+    public Vendor getSender() {
+        return sender;
     }
 
     public long getTime() {
@@ -52,7 +75,7 @@ public class Transaction implements Comparable<Transaction>{
     }
 
     public boolean isPositive(Context context) {
-        return paidToUser.getId().equals(LocalPrefs.getID(context));
+        return recipient.getId().equals(LocalPrefs.getID(context));
     }
 
     @Override

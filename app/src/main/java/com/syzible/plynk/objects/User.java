@@ -13,22 +13,19 @@ import org.json.JSONObject;
  * Created by ed on 13/11/2017.
  */
 
-public class User implements IUser {
-    private String id, forename, surname, profilePic;
+public class User extends Vendor implements IUser {
+    private String forename, surname, profilePic;
 
-    public User(JSONObject o) {
-        try {
-            this.id = o.getString("user_id");
-            this.forename = o.getString("forename");
-            this.surname = o.getString("surname");
-            this.profilePic = o.getString("profile_pic");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public User(JSONObject o) throws JSONException {
+        this(o.getString("user_id"),
+                o.getString("forename"),
+                o.getString("surname"),
+                o.getString("profile_pic"));
     }
 
     public User(String id, String forename, String surname, String profileUrl) {
-        this.id = id;
+        super(id, forename + " " + surname, profileUrl);
+
         this.forename = forename;
         this.surname = surname;
         this.profilePic = profileUrl;
@@ -43,7 +40,7 @@ public class User implements IUser {
 
     @Override
     public String getId() {
-        return id;
+        return super.getId();
     }
 
     @Override

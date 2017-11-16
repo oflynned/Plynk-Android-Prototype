@@ -1,17 +1,18 @@
 package com.syzible.plynk.objects;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by ed on 16/11/2017.
  */
 
-public class Merchant {
-    private String name;
-
-    public Merchant(String name) {
-        this.name = name;
+public class Merchant extends Vendor {
+    public Merchant(JSONObject o) throws JSONException {
+        this(o.getString("user_id"), o.getString("name"), o.getString("picture_url"));
     }
 
-    public String getName() {
-        return name;
+    public Merchant(String id, String name, String picture) {
+        super(id, name, picture);
     }
 }

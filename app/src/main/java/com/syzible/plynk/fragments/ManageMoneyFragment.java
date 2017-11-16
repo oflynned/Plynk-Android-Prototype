@@ -195,8 +195,8 @@ public class ManageMoneyFragment extends Fragment {
 
             holder.time.setText(EncodingUtils.getEncodedDate(transaction.getTime()));
             holder.title.setText(transaction.isPositive(getActivity()) ?
-                    transaction.getPaidFromUser().getFullName() :
-                    transaction.getPaidToUser().getFullName());
+                    transaction.getSender().getVendorName():
+                    transaction.getRecipient().getVendorName());
 
             String paymentAmount = EncodingUtils.getEncodedCurrency(transaction.getAmount());
             int textColour = transaction.isPositive(getActivity()) ?

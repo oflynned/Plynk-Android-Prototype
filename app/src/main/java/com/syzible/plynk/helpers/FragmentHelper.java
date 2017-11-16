@@ -10,17 +10,17 @@ import com.syzible.plynk.R;
  */
 
 public class FragmentHelper {
-    public static void setFragmentWithoutBackstack(FragmentManager fm, Fragment f, int layoutHolder) {
+    public static void setFragmentWithoutBackstack(FragmentManager fm, Fragment f) {
         if (fm != null)
             fm.beginTransaction()
-                    .replace(layoutHolder, f)
+                    .replace(R.id.fragment_holder, f)
                     .commit();
     }
 
-    public static void setFragmentBackstack(FragmentManager fm, Fragment f, int layoutHolder) {
+    public static void setFragmentBackstack(FragmentManager fm, Fragment f) {
         if (fm != null)
             fm.beginTransaction()
-                    .replace(layoutHolder, f)
+                    .replace(R.id.fragment_holder, f)
                     .addToBackStack(f.getClass().getName())
                     .commit();
     }

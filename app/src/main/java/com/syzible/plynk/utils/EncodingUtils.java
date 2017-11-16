@@ -33,9 +33,9 @@ public class EncodingUtils {
         return encodedText;
     }
 
-    public static String getEncodedDate() {
+    public static String getEncodedDate(long time) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
-        Date date = new Date(System.currentTimeMillis());
+        Date date = new Date(time);
         return format.format(date);
     }
 

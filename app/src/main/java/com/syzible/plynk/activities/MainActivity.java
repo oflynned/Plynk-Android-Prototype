@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.syzible.plynk.R;
-import com.syzible.plynk.fragments.ChatFragment;
+import com.syzible.plynk.fragments.ChatListFragment;
 import com.syzible.plynk.fragments.ManageMoneyFragment;
 import com.syzible.plynk.fragments.MyDetailsFragment;
 import com.syzible.plynk.helpers.FragmentHelper;
@@ -34,8 +34,6 @@ import com.syzible.plynk.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.NumberFormat;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -116,7 +114,7 @@ public class MainActivity extends AppCompatActivity
             profilePic.setImageBitmap(bitmap);
         }
 
-        FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ManageMoneyFragment(), R.id.fragment_holder);
+        FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ManageMoneyFragment());
     }
 
     @Override
@@ -159,11 +157,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_chats) {
-            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ChatFragment(), R.id.fragment_holder);
+            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ChatListFragment());
         } else if (id == R.id.nav_manage_money) {
-            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ManageMoneyFragment(), R.id.fragment_holder);
+            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ManageMoneyFragment());
         } else if (id == R.id.nav_my_details) {
-            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new MyDetailsFragment(), R.id.fragment_holder);
+            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new MyDetailsFragment());
         } else if (id == R.id.nav_invite_friends) {
 
         } else if (id == R.id.nav_help) {

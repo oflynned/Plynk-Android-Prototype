@@ -69,12 +69,12 @@
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/start_chat_button"
+        android:id="@+id/manager_money_external_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@color/white"
         app:backgroundTint="@color/colorPrimaryDark"
-        app:srcCompat="@drawable/ic_chat" />
+        app:srcCompat="@drawable/ic_plus" />
 </android.support.design.widget.CoordinatorLayout>

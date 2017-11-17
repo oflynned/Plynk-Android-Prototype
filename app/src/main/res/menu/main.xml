@@ -9,7 +9,7 @@
     <item
         android:id="@+id/action_nfc_merchant"
         android:orderInCategory="100"
-        android:title="NFC Merchant"
+        android:title="Force Android Pay"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_log_out"

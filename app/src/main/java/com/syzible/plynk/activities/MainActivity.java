@@ -30,6 +30,7 @@ import com.syzible.plynk.network.Endpoints;
 import com.syzible.plynk.network.GetImage;
 import com.syzible.plynk.network.NetworkCallback;
 import com.syzible.plynk.network.RestClient;
+import com.syzible.plynk.nfc.MerchantHelper;
 import com.syzible.plynk.objects.Merchant;
 import com.syzible.plynk.objects.Transaction;
 import com.syzible.plynk.objects.User;
@@ -137,40 +138,14 @@ public class MainActivity extends AppCompatActivity
             String dataTransferred = new String(message.getRecords()[0].getPayload());
 
             String vendorName = dataTransferred.split("/")[0];
-            float vendorExpense = Float.parseFloat(dataTransferred.split("/")[1]);
+            double vendorExpense = Double.parseDouble(dataTransferred.split("/")[1]);
             long vendorSaleTime = Long.parseLong(dataTransferred.split("/")[2]);
-            Merchant merchant = new Merchant(vendorName, vendorName, "");
-            User me = User.getMe(this);
 
-            Transaction transaction = new Transaction(vendorExpense, merchant, me, vendorSaleTime);
-            RestClient.post(this, Endpoints.CARD_PAYMENT, JSONUtils.generateExpense(transaction, this), new BaseJsonHttpResponseHandler<JSONObject>() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {
-                    try {
-                        boolean isSuccessful = response.getBoolean("success");
-                        if (!isSuccessful) {
-                            String reason = response.getString("reason");
-                            Toast.makeText(MainActivity.this, reason, Toast.LENGTH_SHORT).show();
-
-                            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ManageMoneyFragment());
-                        } else {
-                            Toast.makeText(MainActivity.this, "Payment approved to " + transaction.getRecipient().getVendorName(), Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, JSONObject errorResponse) {
-
-                }
-
-                @Override
-                protected JSONObject parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                    return new JSONObject(rawJsonData);
-                }
-            });
+            Intent androidPayIntent = new Intent(this, AndroidPayActivity.class);
+            androidPayIntent.putExtra("vendor_name", vendorName);
+            androidPayIntent.putExtra("vendor_expense", String.valueOf(vendorExpense));
+            androidPayIntent.putExtra("vendor_sale_time", String.valueOf(vendorSaleTime));
+            startActivity(androidPayIntent);
         }
     }
 
@@ -197,7 +172,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_nfc_merchant) {
-            startActivity(new Intent(this, MerchantActivity.class));
+            double amount = MerchantHelper.getPrice();
+            Intent intent = new Intent(this, AndroidPayActivity.class);
+            intent.putExtra("transaction_amount", String.valueOf(amount));
+            startActivity(intent);
             return true;
         } else if (id == R.id.action_log_out) {
             FacebookUtils.deleteToken(this);

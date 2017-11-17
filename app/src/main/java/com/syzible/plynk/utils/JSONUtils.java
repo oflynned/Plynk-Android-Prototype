@@ -74,6 +74,20 @@ public class JSONUtils {
         return o;
     }
 
+    public static JSONObject generateFundsWithdrawal(Context context, double amount) {
+        JSONObject o = new JSONObject();
+
+        try {
+            o.put("user_id", LocalPrefs.getID(context));
+            o.put("amount", amount);
+            o.put("description", ManageExternalMoneyFragment.WithdrawalType.withdrawal_to_bank.name());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return o;
+    }
+
     public static JSONObject generateFundsAddition(ManageExternalMoneyFragment.PreloadType preloadType, Context context) {
         JSONObject o = new JSONObject();
         try {

@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.facebook.login.LoginManager;
 import com.syzible.plynk.persistence.LocalPrefs;
-import com.syzible.plynk.services.RealtimeService;
+import com.syzible.plynk.services.TokenService;
 
 /**
  * Created by ed on 15/11/2017.
@@ -35,7 +35,7 @@ public class FacebookUtils {
 
     public static void deleteToken(Context context) {
         // stop updating the FCM token to the server
-        Intent fcmTokenService = new Intent(context, RealtimeService.class);
+        Intent fcmTokenService = new Intent(context, TokenService.class);
         context.stopService(fcmTokenService);
 
         // now log out and clear tokens

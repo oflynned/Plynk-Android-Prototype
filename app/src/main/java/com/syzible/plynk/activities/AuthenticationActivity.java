@@ -1,35 +1,22 @@
 package com.syzible.plynk.activities;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.nfc.FormatException;
-import android.nfc.NdefMessage;
-import android.nfc.NfcAdapter;
-import android.nfc.Tag;
-import android.nfc.tech.Ndef;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
@@ -37,22 +24,17 @@ import com.syzible.plynk.R;
 import com.syzible.plynk.network.Endpoints;
 import com.syzible.plynk.network.RestClient;
 import com.syzible.plynk.persistence.LocalPrefs;
-import com.syzible.plynk.services.RealtimeService;
-import com.syzible.plynk.utils.EmojiUtils;
+import com.syzible.plynk.services.TokenService;
 import com.syzible.plynk.utils.EncodingUtils;
 import com.syzible.plynk.utils.FacebookUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.auth.AUTH;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 
@@ -155,7 +137,7 @@ public class AuthenticationActivity extends AppCompatActivity {
                                 LocalPrefs.setStringPref(LocalPrefs.Pref.gender, gender, context);
                                 LocalPrefs.setStringPref(LocalPrefs.Pref.profile_pic, pic, context);
 
-                                Intent startFCMTokenService = new Intent(context, RealtimeService.class);
+                                Intent startFCMTokenService = new Intent(context, TokenService.class);
                                 AuthenticationActivity.this.startService(startFCMTokenService);
 
                                 RestClient.post(AuthenticationActivity.this, Endpoints.CREATE_USER, postData, new BaseJsonHttpResponseHandler<JSONObject>() {

@@ -102,4 +102,34 @@ public class JSONUtils {
 
         return o;
     }
+
+    public static JSONObject generateFundsAddition(ManageExternalMoneyFragment.PreloadType preloadType, JSONObject cardData, float amount, Context context) {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("bank_card_id", cardData.getString("card_number"));
+            o.put("user_id", LocalPrefs.getID(context));
+            o.put("amount", amount);
+            o.put("description", "Bank Account");
+            o.put("preload_type", preloadType.name());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return o;
+    }
+
+    public static JSONObject generateFundsAddition(ManageExternalMoneyFragment.PreloadType preloadType, float amount, Context context) {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("bank_card_id", preloadType == ManageExternalMoneyFragment.PreloadType.preload_android_pay ? "-1" : "-2");
+            o.put("user_id", LocalPrefs.getID(context));
+            o.put("amount", amount);
+            o.put("description", preloadType == ManageExternalMoneyFragment.PreloadType.preload_android_pay ? "Android Pay" : "Bank Account");
+            o.put("preload_type", preloadType.name());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return o;
+    }
 }

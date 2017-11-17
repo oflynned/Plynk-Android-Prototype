@@ -43,7 +43,7 @@ public class Endpoints {
     // cards
     public static final String GET_PLYNK_CARD_DATA = API_URL + "/user/get-plynk-card";
     public static final String ADD_BANK_CARD = API_URL + "/user/add-bank-card";
-    public static final String GET_BANK_CARDS = API_URL + "/user/get-bank-cards";
+    public static final String GET_BANK_CARD = API_URL + "/user/get-bank-card";
 
     // preload types
     public static final String PRELOAD_ANDROID_PAY = "preload_android_pay";

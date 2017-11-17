@@ -103,37 +103,13 @@
             android:text="Add a Passport or Driver's Licence" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_add_bank_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_add_legal_document"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp">
-
-        <ImageView
-            android:id="@+id/my_details_bank_card"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_profile" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@id/my_details_bank_card"
-            android:text="Add a Bank Card" />
-    </RelativeLayout>
-
     <ImageView
-        android:layout_marginTop="16dp"
         android:id="@+id/plynk_logo_my_details"
         android:layout_width="wrap_content"
         android:layout_height="128dp"
-        android:layout_below="@+id/layout_add_bank_card"
+        android:layout_below="@+id/layout_add_legal_document"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
         android:src="@drawable/plynk_logo_with_text_trans" />
 
 </RelativeLayout>

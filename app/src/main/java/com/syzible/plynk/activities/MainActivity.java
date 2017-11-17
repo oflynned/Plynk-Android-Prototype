@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity
         long vendorSaleTime = Long.parseLong(data[2]);
 
         Intent androidPayIntent = new Intent(this, AndroidPayActivity.class);
+        androidPayIntent.putExtra("vendor_action", "expense");
         androidPayIntent.putExtra("vendor_name", vendorName);
         androidPayIntent.putExtra("vendor_expense", String.valueOf(vendorExpense));
         androidPayIntent.putExtra("vendor_sale_time", String.valueOf(vendorSaleTime));

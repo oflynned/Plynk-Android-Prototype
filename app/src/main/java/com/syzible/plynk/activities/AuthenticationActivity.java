@@ -67,7 +67,7 @@ public class AuthenticationActivity extends AppCompatActivity {
             registerFacebookCallback();
         }
 
-        printHashKey();
+        // printHashKey();
     }
 
     public void printHashKey() {

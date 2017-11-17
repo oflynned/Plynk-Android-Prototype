@@ -19,7 +19,7 @@ public class Transaction implements Comparable<Transaction> {
 
     enum TransactionType {
         individual_transaction,
-        preload_android_pay, preload_bank_card,
+        preload_android_pay, preload_card,
         plynk_good_service_payment, withdrawal_to_bank
     }
 
@@ -37,7 +37,7 @@ public class Transaction implements Comparable<Transaction> {
             } else if (type.equals(TransactionType.preload_android_pay)) {
                 this.recipient = new User(o.getJSONObject("paid_to"));
                 this.sender = new Institute(o.getJSONObject("paid_from"));
-            } else if (type.equals(TransactionType.preload_bank_card)) {
+            } else if (type.equals(TransactionType.preload_card)) {
                 this.recipient = new User(o.getJSONObject("paid_to"));
                 this.sender = new Institute(o.getJSONObject("paid_from"));
             } else if (type.equals(TransactionType.withdrawal_to_bank)) {

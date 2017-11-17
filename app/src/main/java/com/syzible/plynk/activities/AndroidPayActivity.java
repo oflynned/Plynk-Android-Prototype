@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,8 +16,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.syzible.plynk.R;
-import com.syzible.plynk.fragments.ManageMoneyFragment;
-import com.syzible.plynk.helpers.FragmentHelper;
+import com.syzible.plynk.fragments.ManageExternalMoneyFragment;
 import com.syzible.plynk.network.Endpoints;
 import com.syzible.plynk.network.RestClient;
 import com.syzible.plynk.objects.Card;
@@ -45,15 +42,14 @@ public class AndroidPayActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_android_pay);
+        makeFullscreen();
 
         cardName = findViewById(R.id.ap_card_name);
         cardCvv = findViewById(R.id.ap_card_cvv);
         cardExpiry = findViewById(R.id.ap_card_expiry);
         cardNumber = findViewById(R.id.ap_card_number);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        boolean isExpenditure = getIntent().getStringExtra("vendor_action").equals("expense");
         String vendorName = getIntent().getStringExtra("vendor_name");
         float vendorExpense = Float.parseFloat(getIntent().getStringExtra("vendor_expense"));
         long vendorSaleTime = Long.parseLong(getIntent().getStringExtra("vendor_sale_time"));
@@ -64,10 +60,40 @@ public class AndroidPayActivity extends AppCompatActivity {
 
         getCardData();
         animateCard();
-        makeTransaction(vendorName, vendorExpense, vendorSaleTime);
+        if (isExpenditure)
+            makeTransaction(vendorName, vendorExpense, vendorSaleTime);
+        else
+            makeDesposit(vendorName, vendorExpense, vendorSaleTime);
 
         animatePayLogo();
         killActivity(lastActiveFragment);
+    }
+
+    private void makeFullscreen() {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+    }
+
+    private void makeDesposit(String vendorName, float vendorExpense, long vendorSaleTime) {
+        JSONObject payload = JSONUtils.generateFundsAddition(ManageExternalMoneyFragment.PreloadType.preload_android_pay, vendorExpense, this);
+        RestClient.post(this, Endpoints.CARD_TOPUP, payload, new BaseJsonHttpResponseHandler<JSONObject>() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {
+                Toast.makeText(AndroidPayActivity.this, "Topup approved", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, JSONObject errorResponse) {
+
+            }
+
+            @Override
+            protected JSONObject parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+                return new JSONObject(rawJsonData);
+            }
+        });
     }
 
     private void makeTransaction(String vendorName, float vendorExpense, long vendorSaleTime) {
@@ -153,8 +179,8 @@ public class AndroidPayActivity extends AppCompatActivity {
             Intent intent = new Intent(AndroidPayActivity.this, MainActivity.class);
             intent.putExtra("invocation", "android_pay");
             intent.putExtra("last_fragment_active", lastFragmentActive);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-            AndroidPayActivity.this.finish();
         };
 
         new Handler().postDelayed(run, 3000);

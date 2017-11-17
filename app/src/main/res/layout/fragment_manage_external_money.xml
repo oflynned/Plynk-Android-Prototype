@@ -4,16 +4,9 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/make_plynk_card_purchase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Make Purchase" />
-
-    <Button
         android:id="@+id/preload_via_android_pay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/make_plynk_card_purchase"
         android:text="Preload via Android Pay" />
 
     <Button
@@ -29,4 +22,24 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/preload_via_bank_card"
         android:text="Move Funds to Bank Account" />
+
+    <Button
+        android:id="@+id/add_bank_card"
+        android:text="Add Bank Card"
+        android:layout_below="@+id/move_funds_to_bank_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/view_bank_cards"
+        android:text="View Bank Cards"
+        android:layout_below="@+id/add_bank_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="Expenditure and Budget"
+        android:layout_below="@+id/view_bank_cards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

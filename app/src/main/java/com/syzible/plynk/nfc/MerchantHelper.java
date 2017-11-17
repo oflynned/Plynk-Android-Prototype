@@ -24,7 +24,7 @@ public class MerchantHelper {
         return System.currentTimeMillis();
     }
 
-    public static double getPrice() {
+    private static double getPrice() {
         return ((double) new Random().nextInt(1000)) / 100;
     }
 }

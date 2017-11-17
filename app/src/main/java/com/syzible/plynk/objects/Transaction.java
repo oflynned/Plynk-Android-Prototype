@@ -27,6 +27,7 @@ public class Transaction implements Comparable<Transaction> {
         try {
             this.amount = (float) o.getDouble("amount");
 
+            System.out.println(o);
             TransactionType type = TransactionType.valueOf(o.getString("transaction_type"));
             if (type.equals(TransactionType.individual_transaction)) {
                 this.recipient = new User(o.getJSONObject("paid_to"));
@@ -41,8 +42,8 @@ public class Transaction implements Comparable<Transaction> {
                 this.recipient = new User(o.getJSONObject("paid_to"));
                 this.sender = new Institute(o.getJSONObject("paid_from"));
             } else if (type.equals(TransactionType.withdrawal_to_bank)) {
-                this.sender = new User(o.getJSONObject("paid_to"));
-                this.recipient = new Institute(o.getJSONObject("paid_from"));
+                this.recipient = new Institute(o.getJSONObject("paid_to"));
+                this.sender = new User(o.getJSONObject("paid_from"));
             }
 
             this.time = o.getLong("time");

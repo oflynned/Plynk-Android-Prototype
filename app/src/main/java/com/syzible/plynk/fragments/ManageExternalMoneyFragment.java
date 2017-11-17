@@ -68,7 +68,7 @@ public class ManageExternalMoneyFragment extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {
                     if (response.has("success")) {
                         Toast.makeText(getActivity(), "No bank card added", Toast.LENGTH_SHORT).show();
-                    } else{
+                    } else {
                         try {
                             Toast.makeText(getActivity(), response.getString("card_number"), Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
@@ -142,8 +142,23 @@ public class ManageExternalMoneyFragment extends Fragment {
 
         view.findViewById(R.id.move_funds_to_bank_account).setOnClickListener(v -> {
             JSONObject payload = JSONUtils.generateFundsWithdrawal(getActivity(), 10);
-        });
+            RestClient.post(getActivity(), Endpoints.WITHDRAW_TO_BANK, payload, new BaseJsonHttpResponseHandler<JSONObject>() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {
+                    Toast.makeText(getActivity(), rawJsonResponse, Toast.LENGTH_SHORT).show();
+                }
 
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, JSONObject errorResponse) {
+
+                }
+
+                @Override
+                protected JSONObject parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+                    return new JSONObject(rawJsonData);
+                }
+            });
+        });
         return view;
     }
 }

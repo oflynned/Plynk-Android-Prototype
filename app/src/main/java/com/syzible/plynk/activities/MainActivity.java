@@ -2,7 +2,10 @@ package com.syzible.plynk.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,9 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.syzible.plynk.R;
+import com.syzible.plynk.fragments.ChatFragment;
 import com.syzible.plynk.fragments.ChatListFragment;
 import com.syzible.plynk.fragments.ManageMoneyFragment;
 import com.syzible.plynk.fragments.MyDetailsFragment;
@@ -25,6 +30,9 @@ import com.syzible.plynk.network.Endpoints;
 import com.syzible.plynk.network.GetImage;
 import com.syzible.plynk.network.NetworkCallback;
 import com.syzible.plynk.network.RestClient;
+import com.syzible.plynk.objects.Merchant;
+import com.syzible.plynk.objects.Transaction;
+import com.syzible.plynk.objects.User;
 import com.syzible.plynk.persistence.LocalPrefs;
 import com.syzible.plynk.utils.BitmapUtils;
 import com.syzible.plynk.utils.CachingUtils;
@@ -114,7 +122,56 @@ public class MainActivity extends AppCompatActivity
             profilePic.setImageBitmap(bitmap);
         }
 
-        FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new MyDetailsFragment());
+        FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ChatListFragment());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            Parcelable[] rawMessages = intent.getParcelableArrayExtra(
+                    NfcAdapter.EXTRA_NDEF_MESSAGES);
+
+            NdefMessage message = (NdefMessage) rawMessages[0];
+            String dataTransferred = new String(message.getRecords()[0].getPayload());
+
+            String vendorName = dataTransferred.split("/")[0];
+            float vendorExpense = Float.parseFloat(dataTransferred.split("/")[1]);
+            long vendorSaleTime = Long.parseLong(dataTransferred.split("/")[2]);
+            Merchant merchant = new Merchant(vendorName, vendorName, "");
+            User me = User.getMe(this);
+
+            Transaction transaction = new Transaction(vendorExpense, merchant, me, vendorSaleTime);
+            RestClient.post(this, Endpoints.CARD_PAYMENT, JSONUtils.generateExpense(transaction, this), new BaseJsonHttpResponseHandler<JSONObject>() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {
+                    try {
+                        boolean isSuccessful = response.getBoolean("success");
+                        if (!isSuccessful) {
+                            String reason = response.getString("reason");
+                            Toast.makeText(MainActivity.this, reason, Toast.LENGTH_SHORT).show();
+
+                            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ManageMoneyFragment());
+                        } else {
+                            Toast.makeText(MainActivity.this, "Payment approved to " + transaction.getRecipient().getVendorName(), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, JSONObject errorResponse) {
+
+                }
+
+                @Override
+                protected JSONObject parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+                    return new JSONObject(rawJsonData);
+                }
+            });
+        }
     }
 
     @Override

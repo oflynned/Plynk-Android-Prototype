@@ -51,7 +51,7 @@ public class Transaction implements Comparable<Transaction> {
         }
     }
 
-    public Transaction(float amount, User paidToUser, User paidFromUser, long time) {
+    public Transaction(float amount, Vendor paidToUser, Vendor paidFromUser, long time) {
         this.amount = amount;
         this.recipient = paidToUser;
         this.sender = paidFromUser;

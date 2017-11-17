@@ -11,8 +11,10 @@ import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.syzible.plynk.R;
 import com.syzible.plynk.network.Endpoints;
 import com.syzible.plynk.network.RestClient;
+import com.syzible.plynk.objects.Transaction;
 import com.syzible.plynk.persistence.LocalPrefs;
 import com.syzible.plynk.ui.ActionBarUtils;
+import com.syzible.plynk.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +41,7 @@ public class ManageExternalMoneyFragment extends Fragment {
         ActionBarUtils.setToolbar(getActivity(), "Manage External Funds");
 
         view.findViewById(R.id.make_plynk_card_purchase).setOnClickListener(v -> {
-            JSONObject payload = generateExpense();
+            JSONObject payload = JSONUtils.generateExpense(getActivity());
             System.out.println(payload);
 
             RestClient.post(getActivity(), Endpoints.CARD_PAYMENT, payload, new BaseJsonHttpResponseHandler<JSONObject>() {
@@ -61,7 +63,7 @@ public class ManageExternalMoneyFragment extends Fragment {
         });
 
         view.findViewById(R.id.preload_via_android_pay).setOnClickListener(v -> {
-            JSONObject payload = generateFundsAddition(PreloadType.preload_android_pay);
+            JSONObject payload = JSONUtils.generateFundsAddition(PreloadType.preload_android_pay, getActivity());
             System.out.println(payload);
 
             RestClient.post(getActivity(), Endpoints.CARD_TOPUP, payload, new BaseJsonHttpResponseHandler<JSONObject>() {
@@ -91,36 +93,5 @@ public class ManageExternalMoneyFragment extends Fragment {
         });
 
         return view;
-    }
-
-    private JSONObject generateExpense() {
-        JSONObject o = new JSONObject();
-
-        double expense = ((double) new Random().nextInt(1000)) / 100;
-        try {
-            o.put("user_id", LocalPrefs.getID(getActivity()));
-            o.put("merchant_id", "Spar");
-            o.put("amount", expense);
-            o.put("description", "generated expense of €" + expense);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return o;
-    }
-
-    private JSONObject generateFundsAddition(PreloadType preloadType) {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("bank_card_id", preloadType == PreloadType.preload_android_pay ? "-1" : "-2");
-            o.put("user_id", LocalPrefs.getID(getActivity()));
-            o.put("amount", new Random().nextInt(20));
-            o.put("description", preloadType == PreloadType.preload_android_pay ? "Android Pay" : "Bank Account");
-            o.put("preload_type", preloadType.name());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return o;
     }
 }

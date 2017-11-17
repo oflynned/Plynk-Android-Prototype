@@ -101,6 +101,11 @@ public class MainActivity extends AppCompatActivity
 
         View view = navigationView.getHeaderView(0);
         ImageView profilePic = view.findViewById(R.id.card_user_pic);
+        profilePic.setOnClickListener(v -> {
+            FragmentHelper.setFragmentBackstack(getFragmentManager(), new MyDetailsFragment());
+            drawer.closeDrawer(GravityCompat.START);
+        });
+
         userBalance = view.findViewById(R.id.card_user_balance);
         TextView userName = view.findViewById(R.id.card_user_name);
         userName.setText(LocalPrefs.getFullName(this));

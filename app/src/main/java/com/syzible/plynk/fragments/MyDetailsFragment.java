@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.syzible.plynk.R;
 import com.syzible.plynk.network.GetImage;
@@ -30,6 +31,9 @@ public class MyDetailsFragment extends Fragment {
 
         ImageView profilePic = view.findViewById(R.id.my_profile_pic);
         String id = LocalPrefs.getID(getActivity());
+
+        TextView userName = view.findViewById(R.id.my_profile_name);
+        userName.setText(LocalPrefs.getFullName(getActivity()));
 
         if (!CachingUtils.doesImageExist(getActivity(), id)) {
             new GetImage(new NetworkCallback<Bitmap>() {

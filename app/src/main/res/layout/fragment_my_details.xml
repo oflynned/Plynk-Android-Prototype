@@ -19,7 +19,7 @@
         android:layout_below="@+id/my_profile_pic"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Edmond Ó Floinn" />
+        android:text="Forename Surname" />
 
     <View
         android:id="@+id/my_details_layout_divider"

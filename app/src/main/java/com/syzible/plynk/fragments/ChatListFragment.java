@@ -57,7 +57,7 @@ public class ChatListFragment extends Fragment {
         Message message3 = new Message(user3, "3", "Where the fuck is my money", getReportedTime());
         conversations.add(new Conversation(user3, message3, 3));
 
-        conversations.sort((Conversation c1, Conversation c2) -> c2.getLastMessage().getCreatedAt().compareTo(c1.getLastMessage().getCreatedAt()));
+        Collections.sort(conversations, (c1, c2) -> c2.getLastMessage().getCreatedAt().compareTo(c1.getLastMessage().getCreatedAt()));
 
         DialogsList dialogsList = view.findViewById(R.id.conversations_list);
         DialogsListAdapter<Conversation> dialogsListAdapter = new DialogsListAdapter<>(loadImage());

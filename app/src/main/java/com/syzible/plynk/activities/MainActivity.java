@@ -1,5 +1,7 @@
 package com.syzible.plynk.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.nfc.NdefMessage;
@@ -123,7 +125,20 @@ public class MainActivity extends AppCompatActivity
             profilePic.setImageBitmap(bitmap);
         }
 
-        FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ChatListFragment());
+        String invoker = getIntent().getStringExtra("invocation");
+        if (invoker != null) {
+            if (invoker.equals("android_pay")) {
+                try {
+                    Class<?> lastActiveFragment = Class.forName(getIntent().getStringExtra("last_fragment_active"));
+                    Fragment fragment = (Fragment) lastActiveFragment.newInstance();
+                    FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), fragment);
+                } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            FragmentHelper.setFragmentWithoutBackstack(getFragmentManager(), new ChatListFragment());
+        }
     }
 
     @Override
@@ -137,16 +152,25 @@ public class MainActivity extends AppCompatActivity
             NdefMessage message = (NdefMessage) rawMessages[0];
             String dataTransferred = new String(message.getRecords()[0].getPayload());
 
-            String vendorName = dataTransferred.split("/")[0];
-            double vendorExpense = Double.parseDouble(dataTransferred.split("/")[1]);
-            long vendorSaleTime = Long.parseLong(dataTransferred.split("/")[2]);
-
-            Intent androidPayIntent = new Intent(this, AndroidPayActivity.class);
-            androidPayIntent.putExtra("vendor_name", vendorName);
-            androidPayIntent.putExtra("vendor_expense", String.valueOf(vendorExpense));
-            androidPayIntent.putExtra("vendor_sale_time", String.valueOf(vendorSaleTime));
-            startActivity(androidPayIntent);
+            processAndroidPay(dataTransferred);
         }
+    }
+
+    private void processAndroidPay(String dataTransferred) {
+        String[] data = dataTransferred.split("/");
+
+        String vendorName = data[0];
+        double vendorExpense = Double.parseDouble(data[1]);
+        long vendorSaleTime = Long.parseLong(data[2]);
+
+        Intent androidPayIntent = new Intent(this, AndroidPayActivity.class);
+        androidPayIntent.putExtra("vendor_name", vendorName);
+        androidPayIntent.putExtra("vendor_expense", String.valueOf(vendorExpense));
+        androidPayIntent.putExtra("vendor_sale_time", String.valueOf(vendorSaleTime));
+
+        Fragment currentFragment = getFragmentManager().findFragmentById(R.id.fragment_holder);
+        androidPayIntent.putExtra("last_fragment_active", currentFragment.getClass().getName());
+        startActivity(androidPayIntent);
     }
 
     @Override
@@ -172,10 +196,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_nfc_merchant) {
-            double amount = MerchantHelper.getPrice();
-            Intent intent = new Intent(this, AndroidPayActivity.class);
-            intent.putExtra("transaction_amount", String.valueOf(amount));
-            startActivity(intent);
+            String fakePurchase = MerchantHelper.getPurchase();
+            processAndroidPay(fakePurchase);
             return true;
         } else if (id == R.id.action_log_out) {
             FacebookUtils.deleteToken(this);

@@ -12,22 +12,21 @@
             android:id="@+id/android_pay_logo"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:layout_above="@+id/plynk_card"
+            android:layout_above="@+id/ap_plynk_card"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
             android:src="@drawable/android_pay" />
 
         <RelativeLayout
-            android:id="@+id/plynk_card"
+            android:id="@+id/ap_plynk_card"
             android:layout_width="312dp"
             android:layout_height="192dp"
-            android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
             android:layout_marginTop="16dp"
             android:background="@drawable/plynk_blank_card">
 
             <TextView
-                android:id="@+id/card_cvv"
+                android:id="@+id/ap_card_cvv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -36,7 +35,7 @@
                 android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/card_name"
+                android:id="@+id/ap_card_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -47,22 +46,22 @@
                 android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/card_expiry"
+                android:id="@+id/ap_card_expiry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_toEndOf="@id/card_name"
+                android:layout_toEndOf="@id/ap_card_name"
                 android:text="--/--/----"
                 android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/card_number"
+                android:id="@+id/ap_card_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/card_name"
+                android:layout_above="@+id/ap_card_name"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="16dp"
                 android:text="---- ---- ---- ----"
@@ -75,7 +74,7 @@
             android:id="@+id/android_pay_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/plynk_card"
+            android:layout_below="@+id/ap_plynk_card"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="56dp"
             android:text="€0.00"

@@ -108,7 +108,7 @@ public class ManageExternalMoneyFragment extends Fragment {
                     if (response.has("success")) {
                         Toast.makeText(getActivity(), "No bank card added", Toast.LENGTH_SHORT).show();
                     } else {
-                        JSONObject payload = JSONUtils.generateFundsAddition(PreloadType.preload_card, response, 10, getActivity());
+                        JSONObject payload = JSONUtils.generateCardFundsAddition(response, 10, getActivity());
                         RestClient.post(getActivity(), Endpoints.CARD_TOPUP, payload, new BaseJsonHttpResponseHandler<JSONObject>() {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {

@@ -15,7 +15,7 @@ public class Endpoints {
     private static final String STEM_URL = isDebugMode() ? LOCAL_ENDPOINT : APP_ENDPOINT;
     private static final String API_URL = STEM_URL + "/api/v" + API_VERSION;
 
-    public static boolean isDebugMode() {
+    private static boolean isDebugMode() {
         return Build.FINGERPRINT.startsWith("generic")
                 || Build.FINGERPRINT.startsWith("unknown")
                 || Build.MODEL.contains("google_sdk")
@@ -29,8 +29,14 @@ public class Endpoints {
     // users
     public static final String CREATE_USER = API_URL + "/user/create";
     public static final String GET_USER = API_URL + "/user/get";
-    public static final String DELETE_USER = API_URL + "/user/delete";
+    public static final String GET_OTHER_USERS = API_URL + "/user/get-other-users";
     public static final String EDIT_USER_FCM = API_URL + "/user/edit-fcm";
+
+    // messages
+    public static final String SEND_MESSAGE = API_URL + "/message/send";
+    public static final String GET_MESSAGES = API_URL + "/message/get";
+    public static final String MARK_MESSAGE_SEEN = API_URL + "/message/mark-seen";
+    public static final String GET_MESSAGE_PREVIEWS = API_URL + "/message/get-message-previews";
 
     // transactions
     public static final String GET_BALANCE = API_URL + "/transaction/balance";
@@ -44,8 +50,4 @@ public class Endpoints {
     public static final String GET_PLYNK_CARD_DATA = API_URL + "/user/get-plynk-card";
     public static final String ADD_BANK_CARD = API_URL + "/user/add-bank-card";
     public static final String GET_BANK_CARD = API_URL + "/user/get-bank-card";
-
-    // preload types
-    public static final String PRELOAD_ANDROID_PAY = "preload_android_pay";
-    public static final String PRELOAD_BANK_CARD = "preload_bank_card";
 }

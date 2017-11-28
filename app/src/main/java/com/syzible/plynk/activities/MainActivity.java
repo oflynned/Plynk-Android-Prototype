@@ -1,7 +1,9 @@
 package com.syzible.plynk.activities;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.nfc.NdefMessage;
@@ -53,6 +55,20 @@ public class MainActivity extends AppCompatActivity
 
     private TextView userBalance;
 
+    private static boolean isAppVisible;
+
+    public static boolean isActivityVisible() {
+        return isAppVisible;
+    }
+
+    public static void setAppResumed() {
+        isAppVisible = true;
+    }
+
+    public static void setAppPausedOrDead() {
+        isAppVisible = false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +119,7 @@ public class MainActivity extends AppCompatActivity
         ImageView profilePic = view.findViewById(R.id.card_user_pic);
         profilePic.setOnClickListener(v -> {
             FragmentHelper.setFragmentBackstack(getFragmentManager(), new MyDetailsFragment());
+            navigationView.getMenu().getItem(2).setChecked(true);
             drawer.closeDrawer(GravityCompat.START);
         });
 
@@ -150,6 +167,8 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
+        setAppResumed();
+
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
             Parcelable[] rawMessages = intent.getParcelableArrayExtra(
                     NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -159,6 +178,12 @@ public class MainActivity extends AppCompatActivity
 
             processAndroidPay(dataTransferred);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        setAppPausedOrDead();
     }
 
     private void processAndroidPay(String dataTransferred) {
@@ -185,7 +210,17 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (getFragmentManager().getBackStackEntryCount() == 0) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Close Plynk?")
+                        .setMessage("Click OK below to close Plynk")
+                        .setPositiveButton("OK", (dialogInterface, i) -> this.finish())
+                        .setNegativeButton("Cancel", null)
+                        .create()
+                        .show();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -199,7 +234,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_merchant_mode) {
+            startActivity(new Intent(this, MerchantActivity.class));
             return true;
         } else if (id == R.id.action_nfc_merchant) {
             String fakePurchase = MerchantHelper.getPurchase();

@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 public class User extends Vendor implements IUser {
     private String forename, surname, profilePic;
+    private long lastActive;
 
     public User(JSONObject o) throws JSONException {
         this(o.getString("user_id"),
@@ -63,5 +64,13 @@ public class User extends Vendor implements IUser {
     @Override
     public String getAvatar() {
         return profilePic;
+    }
+
+    public long getLastActive() {
+        return lastActive;
+    }
+
+    public void setLastActive(long lastActive) {
+        this.lastActive = lastActive;
     }
 }

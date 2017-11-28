@@ -1,6 +1,5 @@
 package com.syzible.plynk.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,84 +8,110 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 import com.syzible.plynk.R;
+import com.syzible.plynk.activities.MainActivity;
+import com.syzible.plynk.helpers.FragmentHelper;
+import com.syzible.plynk.network.Endpoints;
 import com.syzible.plynk.network.GetImage;
 import com.syzible.plynk.network.NetworkCallback;
+import com.syzible.plynk.network.RestClient;
 import com.syzible.plynk.objects.Conversation;
 import com.syzible.plynk.objects.Message;
 import com.syzible.plynk.objects.User;
 import com.syzible.plynk.ui.ActionBarUtils;
 import com.syzible.plynk.utils.BitmapUtils;
 import com.syzible.plynk.utils.CachingUtils;
-import com.syzible.plynk.utils.EmojiUtils;
+import com.syzible.plynk.utils.JSONUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by ed on 13/11/2017.
  */
 
-public class ChatListFragment extends Fragment {
+public class ChatListFragment extends Fragment implements DialogsListAdapter.OnDialogClickListener<Conversation> {
     private ArrayList<Conversation> conversations = new ArrayList<>();
+    private View view;
 
-    private static final String SHANE_PIC = "https://www.plynk.me/assets/images/team/shane.jpg";
-    private static final String CHRIS_PIC = "https://www.plynk.me/assets/images/team/chris.jpg";
-    private static final String JOSE_PIC = "https://www.plynk.me/assets/images/team/jose.jpg";
-
-    @SuppressLint("NewApi")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
-
-        User user1 = new User("1", "Shane", "Devane", SHANE_PIC);
-        Message message1 = new Message(user1, "1", "Here's that €5.50 I owe you", getReportedTime());
-        conversations.add(new Conversation(user1, message1, 1));
-
-        User user2 = new User("2", "Chris", "La Pat", CHRIS_PIC);
-        Message message2 = new Message(user2, "2", "Thanks for paying for that taxi " + EmojiUtils.getEmoji(EmojiUtils.HAPPY), getReportedTime());
-        conversations.add(new Conversation(user2, message2, 0));
-
-        User user3 = new User("3", "Jose", "Alfonso Mora Lores", JOSE_PIC);
-        Message message3 = new Message(user3, "3", "Where the fuck is my money", getReportedTime());
-        conversations.add(new Conversation(user3, message3, 3));
-
-        Collections.sort(conversations, (c1, c2) -> c2.getLastMessage().getCreatedAt().compareTo(c1.getLastMessage().getCreatedAt()));
-
-        DialogsList dialogsList = view.findViewById(R.id.conversations_list);
-        DialogsListAdapter<Conversation> dialogsListAdapter = new DialogsListAdapter<>(loadImage());
-        dialogsListAdapter.setItems(conversations);
-        dialogsList.setAdapter(dialogsListAdapter);
-        dialogsList.scrollToPosition(conversations.size() - 1);
+        view = inflater.inflate(R.layout.fragment_chat_list, container, false);
 
         ActionBarUtils.resetToolbar(getActivity());
+
+        loadUsers();
 
         return view;
     }
 
-    private static long getReportedTime() {
-        final long TIME_PERIOD = 1000 * 60 * 60 * 6;
-        return System.currentTimeMillis() - (new Random().nextLong() % TIME_PERIOD);
+    private void loadUsers() {
+        RestClient.post(getActivity(), Endpoints.GET_MESSAGE_PREVIEWS, JSONUtils.getId(getActivity()),
+                new BaseJsonHttpResponseHandler<JSONArray>() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONArray response) {
+                        conversations = new ArrayList<>();
+
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject entity = response.getJSONObject(i);
+                                System.out.println(entity);
+                                User user = new User(entity);
+                                Message message = new Message(user, entity);
+                                Conversation conversation = new Conversation(user, message, entity.getInt("unread_count"));
+                                conversations.add(conversation);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        Collections.sort(conversations, (c1, c2) ->
+                                c2.getLastMessage().getCreatedAt().compareTo(c1.getLastMessage().getCreatedAt()));
+
+                        DialogsList dialogsList = view.findViewById(R.id.conversations_list);
+                        DialogsListAdapter<Conversation> dialogsListAdapter = new DialogsListAdapter<>(loadImage());
+                        dialogsListAdapter.setItems(conversations);
+                        dialogsListAdapter.setOnDialogClickListener(ChatListFragment.this);
+                        dialogsList.setAdapter(dialogsListAdapter);
+                        dialogsList.scrollToPosition(conversations.size() - 1);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, JSONArray errorResponse) {
+
+                    }
+
+                    @Override
+                    protected JSONArray parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+                        return new JSONArray(rawJsonData);
+                    }
+                });
     }
 
     private ImageLoader loadImage() {
         return (imageView, url) -> {
-            String[] urlParts = url.split("/");
-            String id = urlParts[urlParts.length - 1];
+            // can only use Facebook to sign up so use the embedded id in the url
+            final String id = url.split("/")[3];
 
             if (!CachingUtils.doesImageExist(getActivity(), id)) {
                 new GetImage(new NetworkCallback<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap response) {
-                        Bitmap scaledAvatar = BitmapUtils.generateMetUserAvatar(response);
-                        imageView.setImageBitmap(scaledAvatar);
+                        Bitmap croppedImage = BitmapUtils.getCroppedCircle(response);
+                        final Bitmap scaledAvatar = BitmapUtils.scaleBitmap(croppedImage, BitmapUtils.BITMAP_SIZE_SMALL);
                         CachingUtils.cacheImage(id, scaledAvatar);
+                        imageView.setImageBitmap(scaledAvatar);
                     }
 
                     @Override
@@ -95,9 +120,20 @@ public class ChatListFragment extends Fragment {
                     }
                 }, url).execute();
             } else {
-                Bitmap bitmap = CachingUtils.getCachedImage(id);
-                imageView.setImageBitmap(bitmap);
+                final Bitmap cachedImage = CachingUtils.getCachedImage(id);
+                imageView.setImageBitmap(cachedImage);
             }
         };
+    }
+
+    @Override
+    public void onDialogClick(Conversation conversation) {
+        for (int i = 0; i < conversations.size(); i++)
+            if (conversations.get(i).getId().equals(conversation.getId()))
+                conversations.get(i).setUnreadCount(0);
+
+        User partner = (User) conversation.getUsers().get(0);
+        ChatFragment frag = new ChatFragment().setPartner(partner);
+        FragmentHelper.setFragmentBackstack(getFragmentManager(), frag);
     }
 }

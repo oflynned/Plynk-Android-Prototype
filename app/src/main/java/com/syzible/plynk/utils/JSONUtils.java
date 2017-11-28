@@ -5,6 +5,7 @@ import android.content.Context;
 import com.syzible.plynk.fragments.ManageExternalMoneyFragment;
 import com.syzible.plynk.objects.Card;
 import com.syzible.plynk.objects.Transaction;
+import com.syzible.plynk.objects.User;
 import com.syzible.plynk.persistence.LocalPrefs;
 
 import org.json.JSONException;
@@ -22,6 +23,45 @@ public class JSONUtils {
         JSONObject o = new JSONObject();
         try {
             o.put("user_id", LocalPrefs.getID(context));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return o;
+    }
+
+    public static JSONObject getMessageInteractionPayload(Context context, User partner) {
+        return getMessageInteractionPayload(context, partner.getId());
+    }
+
+    public static JSONObject getMessageInteractionPayload(Context context, String id) {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("from_id", LocalPrefs.getID(context));
+            o.put("to_id", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return o;
+    }
+
+    public static JSONObject getPartnerInteractionPayload(Context context, User partner) {
+        return getPartnerInteractionPayload(context, partner.getId(), null);
+    }
+
+    public static JSONObject getPartnerInteractionPayload(Context context, User partner, String type) {
+        return getPartnerInteractionPayload(context, partner.getId(), type);
+    }
+
+    public static JSONObject getPartnerInteractionPayload(Context context, String id, String type) {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("my_id", LocalPrefs.getID(context));
+            o.put("partner_id", id);
+
+            if (type != null)
+                o.put("type", type);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -58,22 +98,6 @@ public class JSONUtils {
         return o;
     }
 
-    public static JSONObject generateExpense(Context context) {
-        JSONObject o = new JSONObject();
-
-        double expense = ((double) new Random().nextInt(1000)) / 100;
-        try {
-            o.put("user_id", LocalPrefs.getID(context));
-            o.put("merchant_id", "Spar");
-            o.put("amount", expense);
-            o.put("description", "generated expense of €" + expense);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return o;
-    }
-
     public static JSONObject generateFundsWithdrawal(Context context, double amount) {
         JSONObject o = new JSONObject();
 
@@ -88,29 +112,14 @@ public class JSONUtils {
         return o;
     }
 
-    public static JSONObject generateFundsAddition(ManageExternalMoneyFragment.PreloadType preloadType, Context context) {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("bank_card_id", preloadType == ManageExternalMoneyFragment.PreloadType.preload_android_pay ? "-1" : "-2");
-            o.put("user_id", LocalPrefs.getID(context));
-            o.put("amount", new Random().nextInt(20));
-            o.put("description", preloadType == ManageExternalMoneyFragment.PreloadType.preload_android_pay ? "Android Pay" : "Bank Account");
-            o.put("preload_type", preloadType.name());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return o;
-    }
-
-    public static JSONObject generateFundsAddition(ManageExternalMoneyFragment.PreloadType preloadType, JSONObject cardData, float amount, Context context) {
+    public static JSONObject generateCardFundsAddition(JSONObject cardData, float amount, Context context) {
         JSONObject o = new JSONObject();
         try {
             o.put("bank_card_id", cardData.getString("card_number"));
             o.put("user_id", LocalPrefs.getID(context));
             o.put("amount", amount);
             o.put("description", "Bank Account");
-            o.put("preload_type", preloadType.name());
+            o.put("preload_type", ManageExternalMoneyFragment.PreloadType.preload_card.name());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -118,14 +127,14 @@ public class JSONUtils {
         return o;
     }
 
-    public static JSONObject generateFundsAddition(ManageExternalMoneyFragment.PreloadType preloadType, float amount, Context context) {
+    public static JSONObject generateAndroidPayFundsAddition(float amount, Context context) {
         JSONObject o = new JSONObject();
         try {
-            o.put("bank_card_id", preloadType == ManageExternalMoneyFragment.PreloadType.preload_android_pay ? "-1" : "-2");
+            o.put("bank_card_id", "-1");
             o.put("user_id", LocalPrefs.getID(context));
             o.put("amount", amount);
-            o.put("description", preloadType == ManageExternalMoneyFragment.PreloadType.preload_android_pay ? "Android Pay" : "Bank Account");
-            o.put("preload_type", preloadType.name());
+            o.put("description", "Android Pay");
+            o.put("preload_type", ManageExternalMoneyFragment.PreloadType.preload_android_pay.name());
         } catch (JSONException e) {
             e.printStackTrace();
         }

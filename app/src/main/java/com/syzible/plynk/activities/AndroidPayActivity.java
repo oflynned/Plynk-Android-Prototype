@@ -77,7 +77,7 @@ public class AndroidPayActivity extends AppCompatActivity {
     }
 
     private void makeDesposit(String vendorName, float vendorExpense, long vendorSaleTime) {
-        JSONObject payload = JSONUtils.generateFundsAddition(ManageExternalMoneyFragment.PreloadType.preload_android_pay, vendorExpense, this);
+        JSONObject payload = JSONUtils.generateAndroidPayFundsAddition(vendorExpense, this);
         RestClient.post(this, Endpoints.CARD_TOPUP, payload, new BaseJsonHttpResponseHandler<JSONObject>() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {

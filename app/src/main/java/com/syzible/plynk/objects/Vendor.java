@@ -1,5 +1,7 @@
 package com.syzible.plynk.objects;
 
+import com.syzible.plynk.utils.EncodingUtils;
+
 /**
  * Created by ed on 16/11/2017.
  */
@@ -19,7 +21,7 @@ public abstract class Vendor {
     }
 
     public String getVendorName() {
-        return name;
+        return EncodingUtils.decodeText(name);
     }
 
     public String getPicture() {

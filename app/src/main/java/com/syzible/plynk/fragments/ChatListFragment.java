@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
@@ -86,6 +87,7 @@ public class ChatListFragment extends Fragment implements DialogsListAdapter.OnD
                         DialogsListAdapter<Conversation> dialogsListAdapter = new DialogsListAdapter<>(loadImage());
                         dialogsListAdapter.setItems(conversations);
                         dialogsListAdapter.setOnDialogClickListener(ChatListFragment.this);
+                        dialogsListAdapter.setOnDialogLongClickListener(ChatListFragment.this);
                         dialogsList.setAdapter(dialogsListAdapter);
                         dialogsList.scrollToPosition(conversations.size() - 1);
                     }
@@ -148,16 +150,16 @@ public class ChatListFragment extends Fragment implements DialogsListAdapter.OnD
                 .setMessage("Click okay to send €4.20 to " + partner.getFullName() + " " + EmojiUtils.getEmoji(EmojiUtils.HAPPY))
                 .setPositiveButton("Send", (dialogInterface, i) -> {
                     Transaction t = new Transaction(4.20f, partner, User.getMe(getActivity()), System.currentTimeMillis());
-                    JSONObject o = JSONUtils.generateExpense(t, getActivity());
+                    JSONObject o = JSONUtils.generateIndividualTransaction(t, getActivity());
                     RestClient.post(getActivity(), Endpoints.USER_TRANSACTION, o, new BaseJsonHttpResponseHandler<JSONObject>() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {
-
+                            Toast.makeText(getActivity(), rawJsonResponse, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, JSONObject errorResponse) {
-
+                            Toast.makeText(getActivity(), rawJsonData, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override

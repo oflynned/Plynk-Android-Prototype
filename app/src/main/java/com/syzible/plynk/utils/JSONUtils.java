@@ -98,6 +98,21 @@ public class JSONUtils {
         return o;
     }
 
+    public static JSONObject generateIndividualTransaction(Transaction transaction, Context context) {
+        JSONObject o = new JSONObject();
+
+        try {
+            o.put("from_id", LocalPrefs.getID(context));
+            o.put("to_id", transaction.getRecipient().getId());
+            o.put("amount", transaction.getAmount());
+            o.put("description", "generated expense of €" + transaction.getAmount());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return o;
+    }
+
     public static JSONObject generateFundsWithdrawal(Context context, double amount) {
         JSONObject o = new JSONObject();
 

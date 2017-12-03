@@ -1,8 +1,10 @@
 package com.syzible.plynk.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +23,12 @@ import com.syzible.plynk.network.NetworkCallback;
 import com.syzible.plynk.network.RestClient;
 import com.syzible.plynk.objects.Conversation;
 import com.syzible.plynk.objects.Message;
+import com.syzible.plynk.objects.Transaction;
 import com.syzible.plynk.objects.User;
 import com.syzible.plynk.ui.ActionBarUtils;
 import com.syzible.plynk.utils.BitmapUtils;
 import com.syzible.plynk.utils.CachingUtils;
+import com.syzible.plynk.utils.EmojiUtils;
 import com.syzible.plynk.utils.JSONUtils;
 
 import org.json.JSONArray;
@@ -40,7 +44,7 @@ import cz.msebera.android.httpclient.Header;
  * Created by ed on 13/11/2017.
  */
 
-public class ChatListFragment extends Fragment implements DialogsListAdapter.OnDialogClickListener<Conversation> {
+public class ChatListFragment extends Fragment implements DialogsListAdapter.OnDialogClickListener<Conversation>, DialogsListAdapter.OnDialogLongClickListener<Conversation> {
     private ArrayList<Conversation> conversations = new ArrayList<>();
     private View view;
 
@@ -50,7 +54,6 @@ public class ChatListFragment extends Fragment implements DialogsListAdapter.OnD
         view = inflater.inflate(R.layout.fragment_chat_list, container, false);
 
         ActionBarUtils.resetToolbar(getActivity());
-
         loadUsers();
 
         return view;
@@ -133,7 +136,38 @@ public class ChatListFragment extends Fragment implements DialogsListAdapter.OnD
                 conversations.get(i).setUnreadCount(0);
 
         User partner = (User) conversation.getUsers().get(0);
-        ChatFragment frag = new ChatFragment().setPartner(partner);
-        FragmentHelper.setFragmentBackstack(getFragmentManager(), frag);
+        Fragment f = new ChatFragment().setPartner(partner);
+        FragmentHelper.setFragmentBackstack(getFragmentManager(), f);
+    }
+
+    @Override
+    public void onDialogLongClick(Conversation conversation) {
+        User partner = (User) conversation.getUsers().get(0);
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Send money to " + partner.getForename() + "?")
+                .setMessage("Click okay to send €4.20 to " + partner.getFullName() + " " + EmojiUtils.getEmoji(EmojiUtils.HAPPY))
+                .setPositiveButton("Send", (dialogInterface, i) -> {
+                    Transaction t = new Transaction(4.20f, partner, User.getMe(getActivity()), System.currentTimeMillis());
+                    JSONObject o = JSONUtils.generateExpense(t, getActivity());
+                    RestClient.post(getActivity(), Endpoints.USER_TRANSACTION, o, new BaseJsonHttpResponseHandler<JSONObject>() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSONObject response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, JSONObject errorResponse) {
+
+                        }
+
+                        @Override
+                        protected JSONObject parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+                            return new JSONObject(rawJsonData);
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 }

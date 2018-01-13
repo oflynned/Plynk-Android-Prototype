@@ -13,7 +13,7 @@
             android:layout_height="192dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
-            android:background="@drawable/plynk_blank_card">
+            android:background="@drawable/digital_card">
 
             <TextView
                 android:id="@+id/card_cvv"

@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/my_details_bank"
-            android:text="22 Goldsmith Street" />
+            android:text="House #, Street Name" />
 
         <TextView
             android:id="@+id/address_line_2"
@@ -58,7 +58,7 @@
             android:layout_below="@+id/address_line_1"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/my_details_bank"
-            android:text="Phibsborough" />
+            android:text="Town" />
 
         <TextView
             android:id="@+id/address_line_3"
@@ -67,7 +67,7 @@
             android:layout_below="@+id/address_line_2"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/my_details_bank"
-            android:text="Dublin 7" />
+            android:text="District" />
 
         <TextView
             android:id="@+id/address_line_4"
@@ -76,7 +76,7 @@
             android:layout_below="@id/address_line_3"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/my_details_bank"
-            android:text="D07 FK2W" />
+            android:text="Postcode" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -102,14 +102,5 @@
             android:layout_toEndOf="@id/my_details_legal_documents"
             android:text="Add a Passport or Driver's Licence" />
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/plynk_logo_my_details"
-        android:layout_width="wrap_content"
-        android:layout_height="128dp"
-        android:layout_below="@+id/layout_add_legal_document"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/plynk_logo_with_text_trans" />
 
 </RelativeLayout>

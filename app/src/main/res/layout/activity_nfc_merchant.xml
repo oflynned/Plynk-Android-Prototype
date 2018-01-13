@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.syzible.plynk.activities.MerchantActivity">
+    tools:context="com.syzible.wallet.activities.MerchantActivity">
 
     <TextView
         android:text="Ready to sell via NFC merchant"

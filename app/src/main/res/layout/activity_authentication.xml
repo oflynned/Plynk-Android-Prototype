@@ -5,23 +5,37 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
-        <ImageView
-            android:id="@+id/plynk_logo"
+        <TextView
+            android:id="@+id/auth_logo_header"
             android:layout_width="wrap_content"
-            android:layout_height="192dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
-            android:src="@drawable/plynk_logo_with_text_trans" />
+            android:text=":wallet"
+            android:textColor="@color/colorPrimary"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/auth_logo_tagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/auth_logo_header"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:text="Transfer money between wallets"
+            android:textSize="18sp" />
 
         <mehdi.sakout.fancybuttons.FancyButton
-            android:layout_below="@+id/plynk_logo"
             android:id="@+id/login_fb_login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/auth_logo_tagline"
             android:layout_centerInParent="true"
             android:layout_margin="32dp"
             android:paddingBottom="8dp"

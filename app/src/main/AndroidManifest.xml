@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.syzible.plynk">
+    package="com.syzible.wallet">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -21,7 +21,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activities.AuthenticationActivity"
+            android:name="com.syzible.wallet.activities.AuthenticationActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.FullScreen">
 
@@ -32,12 +32,12 @@
         </activity>
 
         <activity
-            android:name=".activities.MerchantActivity"
+            android:name="com.syzible.wallet.activities.MerchantActivity"
             android:label="Merchant Vendor"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.syzible.wallet.activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -49,7 +49,7 @@
         </activity>
 
         <activity
-            android:name=".activities.AndroidPayActivity"
+            android:name="com.syzible.wallet.activities.AndroidPayActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
@@ -74,7 +74,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.TokenService" />
+        <service android:name="com.syzible.wallet.services.TokenService" />
     </application>
 
 </manifest>
